@@ -7,6 +7,23 @@ export class DeploymentPipelineStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props?: cdk.StackProps) {
     super(app, id, props);
 
+    // CloudFormation template parameters for the GitHub source repository
+    const  repo = new cdk.CfnParameter(this, 'RepoName', {
+      type: 'String',
+      description: 'GitHub repository'
+    });
+
+    const branch = new cdk.CfnParameter(this, 'SourceBranch', {
+      type: 'String',
+      description: 'Source branch',
+      default: 'main',
+    });
+
+    const owner = new cdk.CfnParameter(this, 'RepoOwner', {
+      type: 'String',
+      description: 'Repository Owner',
+    });
+
     // A code pipeline consists of a source (github|codecommit|s3) and one or
     // more build projects
 
@@ -44,10 +61,10 @@ export class DeploymentPipelineStack extends cdk.Stack {
             new actions.GitHubSourceAction({
               actionName: 'Source',
               output: sourceOutput,
-              owner: this.node.tryGetContext('owner'),
-              repo: this.node.tryGetContext('repo'),
-              branch: this.node.tryGetContext('branch'),
-              oauthToken: cdk.SecretValue.secretsManager('github'),
+              owner: owner.valueAsString,
+              repo: repo.valueAsString,
+              branch: branch.valueAsString,
+              oauthToken: cdk.SecretValue.secretsManager('GitHubPersonal'),
             }),
           ],
         },
