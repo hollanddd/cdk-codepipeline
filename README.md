@@ -1,28 +1,21 @@
-# CDK TypeScript Deployment Pipeline
+# CDK Deployment Pipeline W/ GitHub Source
 
-This project builds an AWS CodePipeline with CDK.
+This project use the AWS CDK to build an AWS CodePipeline sourced from a GitHub
+Repository. The stack expects the repository to contain a `buildspec.yml` at the
+root of the directory.
 
-The `cdk.json` file tells the CDK Toolkit how to execute the app.
+The stack requires the following parameters:
+- `RepositoryOwnerName` - repository owner
+- `RepositoryName` - repository name
+- `BranchName` - default `main`
+- `GitHubTokenName` - [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html) name of [GitHub personal token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
-The stack relies on receiving the GitHub owner, repo, and branch from the CDK
-context.  Use `cdk synth -c owner=github-user -c  repo=name -c branch=main` or
-add the following to `cdk.json`:
+## example deployment
 
-```json
-{
-  "context": {
-    "owner": "github-user",
-    "repo":  "repo-name"
-    "branch" "main"
-  }
-}
+```bash
+cdk deploy --parameters RepositoryName=some-repo \
+  --parameters RepositoryName=some-repo          \
+  --parameters RepositoryOwnerName=some-owner    \
+  --parameters BranchName=main                   \
+  --parameters GitHubTokenName=secret-name       \
 ```
-
-## Useful commands
-
-- `npm run build`   compile typescript to js
-- `npm run watch`   watch for changes and compile
-- `npm run test`    perform the jest unit tests
-- `cdk deploy`      deploy this stack to your default AWS account/region
-- `cdk diff`        compare deployed stack with current state
-- `cdk synth`       emits the synthesized CloudFormation template
