@@ -33,7 +33,7 @@ export class DeploymentPipelineStack extends cdk.Stack {
       version: '0.2',
       phases: {
         build: {
-          comands: 'make',
+          comands: 'cd $CODEBUILD_SRC_DIR && make',
         },
         artifacts: {
           'base-directory': '$CODEBUILD_SRC_DIR/build',
@@ -43,10 +43,10 @@ export class DeploymentPipelineStack extends cdk.Stack {
     });
 
     // A build project configures build commands and the execution environment
-    const buildProject = new codebuild.PipelineProject(this, 'BuildPipeline', {
+    const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
       buildSpec,
       environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_2_0
       },
     });
 
